@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/gisikw/twoverlay.svg?branch=master)](https://travis-ci.org/gisikw/twoverlay)
+[![Test Coverage](https://codeclimate.com/github/gisikw/twoverlay/badges/coverage.svg)](https://codeclimate.com/github/gisikw/twoverlay/coverage)
+[![Code Climate](https://codeclimate.com/github/gisikw/twoverlay/badges/gpa.svg)](https://codeclimate.com/github/gisikw/twoverlay)
+
 # Twoverlay Feature List
 
 ## Phaser!
