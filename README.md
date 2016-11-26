@@ -17,7 +17,9 @@
 - Notification system
   - Interact with Twitch API
 
-## Meh?
-- Better chat
-  _ Time ago / timestamps
-  - Persist chat history
+## Cleaning Up the Code!
+- Tests?!
+- Continuous Integration / Code Climate
+- External dependencies
+- ESLint
+- General awfulness
