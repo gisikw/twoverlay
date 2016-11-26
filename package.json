@@ -51,7 +51,7 @@
     "deploy": "npm run build && rsync -r build/ cheerskevin.com:/var/www/cheerskevin.com/twoverlay/ && ssh cheerskevin.com ./message reload!",
     "test": "babel-tap test/**/*.js",
     "test:coverage": "babel-tap --cov --coverage-report=lcov test/**/*.js",
-    "lint": "eslint src"
+    "lint": "eslint src test"
   },
   "nyc": {
     "include": ["src/**/*.js"]

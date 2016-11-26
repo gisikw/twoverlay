@@ -13,8 +13,11 @@ test('Twoverlay can be loaded', (assert) => {
   };
   global.Image = () => ({});
   global.window = {};
-
   require('../src/Twoverlay');
+  delete global.document;
+  delete global.Image;
+  delete global.window;
+
   assert.pass('Twoverlay loads');
   assert.end();
 });
