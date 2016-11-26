@@ -1,14 +1,26 @@
 import React, { Component } from 'react';
+import { client as tmi } from 'tmi.js';
 import ChatWindow from './components/ChatWindow';
 import Notifications from './components/Notifications';
 import GamePanel from './components/GamePanel';
+
+const options = {
+  connection: { reconnect: true, secure: true }, channels: ['#cheerskevin'],
+};
+
+const DEFAULT_MESSAGE = [
+  '#cheerskevin',
+  { username: 'Twoverlay Chat', id: 'key', emotes: {}, badges: { moderator: '1' } },
+  'Welcome to the chat',
+];
+
 
 let chatListener;
 
 class Twoverlay extends Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = { messages: [DEFAULT_MESSAGE] };
   }
 
   componentDidMount() {
@@ -17,6 +29,22 @@ class Twoverlay extends Component {
       if (e.keyCode === 32) {
         this.setState({ away: !this.state.away });
       }
+    });
+    const client = tmi(options);
+    client.connect();
+    client.on('message', (...args) => {
+      if (args[2].match(/^#[a-f0-9]{3}(?:[a-f0-9]{3})?$/i)) {
+        this.colorify(args[2]);
+      }
+      if (chatListener) {
+        chatListener({
+          sender: args[1].username || args[1]['display-name'],
+          message: args[2],
+        });
+      }
+      this.setState({
+        messages: [args].concat(this.state.messages).slice(0, 50),
+      });
     });
   }
 
@@ -39,8 +67,7 @@ class Twoverlay extends Component {
         <ChatWindow
           {...{
             style: styles.chat(pct),
-            onMessage: args => chatListener && chatListener(args),
-            colorify: hex => this.colorify(hex),
+            messages: this.state.messages,
             pct,
           }}
         />

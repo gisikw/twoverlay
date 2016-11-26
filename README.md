@@ -21,9 +21,10 @@
 - Notification system
   - Interact with Twitch API
 
+## Robust Auto-Away
+- Timers
+- Screen overlays
+
 ## Cleaning Up the Code!
-- Tests?!
-- Continuous Integration / Code Climate
 - External dependencies
-- ESLint
 - General awfulness
