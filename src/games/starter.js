@@ -1,6 +1,6 @@
-global.PIXI = require('phaser/build/custom/pixi')
-global.p2 = require('phaser/build/custom/p2')
-global.Phaser = require('phaser/build/custom/phaser-split')
+global.PIXI = require('phaser/build/custom/pixi');
+global.p2 = require('phaser/build/custom/p2');
+global.Phaser = require('phaser/build/custom/phaser-split');
 
 const DEBUG = true;
 const AVATAR_SCALE = 3;
@@ -13,22 +13,23 @@ const CHARACTER_OFFSETS = { baby: 0, man: 3, woman: 6, alien: 9 };
 
 export default {
   init(id, pct, register) {
+    const Phaser = global.Phaser;
     const SCALE_X = 1520 * pct;
     const SCALE_Y = 225 * pct;
     let targetX;
     let targetY;
     let player;
-    let game = new Phaser.Game(SCALE_X, SCALE_Y, Phaser.AUTO, id,
-                               { preload, create, render }, true);
+    const game = new Phaser.Game(SCALE_X, SCALE_Y, Phaser.AUTO, id,
+                                 { preload, create, render }, true);
 
     pickRandomTarget();
 
-    register(({ message, sender }) => {
+    register(({ message }) => {
       if (message.match(/^\d+,\s*\d+$/)) {
         pickXYTarget(
-          parseInt(message.split(',')[0]),
-          parseInt(message.split(',')[1]),
-        )
+          parseInt(message.split(',')[0], 10),
+          parseInt(message.split(',')[1], 10),
+        );
       }
     });
 
@@ -53,8 +54,8 @@ export default {
     }
 
     function character(name) {
-      let i = CHARACTER_OFFSETS[name];
-      let chr = game.add.sprite(-AVATAR_SCALE * SPRITE_SIZE * 2,
+      const i = CHARACTER_OFFSETS[name];
+      const chr = game.add.sprite(-AVATAR_SCALE * SPRITE_SIZE * 2,
                                 game.world.centerY,
                                 'characters');
       chr.scale.setTo(AVATAR_SCALE, AVATAR_SCALE);
@@ -68,11 +69,11 @@ export default {
     }
 
     function displayDebugInformation() {
-      let rect = new Phaser.Rectangle(0, 0, 30, 18);
-      let point = new Phaser.Point(targetX, targetY) ;
+      const rect = new Phaser.Rectangle(0, 0, 30, 18);
+      const point = new Phaser.Point(targetX, targetY);
       game.debug.geom(rect, 'rgba(0,0,0,0.7)');
       game.debug.geom(point, 'rgba(255,255,0,1)');
-      game.debug.text(game.time.fps, 2, 14, "#00ff00");
+      game.debug.text(game.time.fps, 2, 14, '#00ff00');
     }
 
     function nearTarget() {
@@ -96,13 +97,13 @@ export default {
     }
 
     function pickRandomTarget() {
-      targetX = Math.random() * (SCALE_X - AVATAR_SCALE * SPRITE_SIZE);
-      targetY = Math.random() * (SCALE_Y - AVATAR_SCALE * SPRITE_SIZE);
+      targetX = Math.random() * (SCALE_X - (AVATAR_SCALE * SPRITE_SIZE));
+      targetY = Math.random() * (SCALE_Y - (AVATAR_SCALE * SPRITE_SIZE));
     }
 
     function pickXYTarget(x, y) {
-      targetX = Math.max(Math.min(x, SCALE_X - AVATAR_SCALE * SPRITE_SIZE), 0);
-      targetY = Math.max(Math.min(y, SCALE_Y - AVATAR_SCALE * SPRITE_SIZE), 0);
+      targetX = Math.max(Math.min(x, SCALE_X - (AVATAR_SCALE * SPRITE_SIZE)), 0);
+      targetY = Math.max(Math.min(y, SCALE_Y - (AVATAR_SCALE * SPRITE_SIZE)), 0);
     }
-  }
+  },
 };

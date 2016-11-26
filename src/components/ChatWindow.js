@@ -1,24 +1,25 @@
-import React, { Component }  from 'react';
+import React, { Component } from 'react';
 import { client as tmi } from 'tmi.js';
 import ChatMessage from './ChatMessage';
 
 const DEFAULT_MESSAGE = [
-  '#cheerskevin', { username: 'Twoverlay Chat', id: 'key', emotes: {},
-                    badges: { moderator: '1' } }, 'Welcome to the chat',
+  '#cheerskevin',
+  { username: 'Twoverlay Chat', id: 'key', emotes: {}, badges: { moderator: '1' } },
+  'Welcome to the chat',
 ];
 
 const options = {
-  connection: { reconnect: true, secure: true }, channels: [ '#cheerskevin' ],
+  connection: { reconnect: true, secure: true }, channels: ['#cheerskevin'],
 };
 
 class ChatWindow extends Component {
   constructor() {
     super();
-    this.state = { messages: [ DEFAULT_MESSAGE ] };
+    this.state = { messages: [DEFAULT_MESSAGE] };
   }
 
   componentDidMount() {
-    var client = new tmi(options);
+    const client = tmi(options);
     client.connect();
     client.on('message', (...args) => {
       if (args[2].match(/^#[a-f0-9]{3}(?:[a-f0-9]{3})?$/i)) {
@@ -29,27 +30,34 @@ class ChatWindow extends Component {
         message: args[2],
       });
       this.setState({
-        messages: [args].concat(this.state.messages).slice(0,50)
+        messages: [args].concat(this.state.messages).slice(0, 50),
       });
     });
   }
 
   render() {
     return (
-      <div id='chat' style={ Object.assign({}, styles.container, this.props.style) }>
-        <div style={ styles.overlay } />
+      <div id="chat" style={Object.assign({}, styles.container, this.props.style)}>
+        <div style={styles.overlay} />
         <ChatMessage
           message={this.state.messages[0]}
-          first={true}
           pct={this.props.pct}
+          first
         />
-        { this.state.messages.slice(1).map((msg) =>
-            <ChatMessage message={msg} pct={this.props.pct} />
-          )
+        {
+          this.state.messages.slice(1).map(msg =>
+            <ChatMessage message={msg} pct={this.props.pct} key={msg[1].id} />)
         }
       </div>
     );
   }
+}
+
+ChatWindow.propTypes = {
+  pct: React.PropTypes.number,
+  style: React.PropTypes.any,
+  onMessage: React.PropTypes.func,
+  colorify: React.PropTypes.func,
 };
 
 const styles = {

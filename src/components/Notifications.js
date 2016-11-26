@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const MESSAGE_CYCLE_RATE = 2e3
+const MESSAGE_CYCLE_RATE = 2e3;
 const DESIGN_REFERENCE_SIZE = 1520;
 const WEBSOCKET_URL = (process.env.NODE_ENV === 'production')
                         ? 'wss://cheerskevin.com/wss/'
@@ -9,7 +9,7 @@ const WEBSOCKET_URL = (process.env.NODE_ENV === 'production')
 class Notifications extends Component {
   constructor() {
     super();
-    this.state = { messages: [ 'Hello' ] };
+    this.state = { messages: ['Hello'] };
   }
 
   componentDidMount() {
@@ -18,7 +18,7 @@ class Notifications extends Component {
 
   spawnWebsocket() {
     setTimeout(() => {
-      this.w = new WebSocket(WEBSOCKET_URL);
+      this.w = new global.WebSocket(WEBSOCKET_URL);
 
       this.w.onclose = () => {
         this.spawnWebsocket();
@@ -26,7 +26,7 @@ class Notifications extends Component {
 
       this.w.onmessage = (msg) => {
         if (msg.data === 'reload!') {
-          window.location.reload();
+          global.window.location.reload();
         } else {
           this.setState({ messages: this.state.messages.concat([msg.data]) });
         }
@@ -50,12 +50,12 @@ class Notifications extends Component {
   }
 
   render() {
-    let currentMessage = this.state.messages[0];
-    let pct = this.props.width / DESIGN_REFERENCE_SIZE;
+    const currentMessage = this.state.messages[0];
+    const pct = this.props.width / DESIGN_REFERENCE_SIZE;
     this.ensureMessageCycling();
     return (
-      <div style={ Object.assign({}, styles.container, this.props.style) }>
-        <Message {...{pct}} >{ currentMessage }</Message>
+      <div style={Object.assign({}, styles.container, this.props.style)}>
+        <Message {...{ pct }} >{ currentMessage }</Message>
       </div>
     );
   }
@@ -64,10 +64,14 @@ class Notifications extends Component {
 const Message = ({ children, pct }) => {
   if (!children) return null;
   return (
-    <div style={ styles.message(pct) }>
+    <div style={styles.message(pct)}>
       { children }
     </div>
   );
+};
+Message.propTypes = {
+  children: React.PropTypes.any,
+  pct: React.PropTypes.number,
 };
 
 const styles = {
@@ -75,7 +79,7 @@ const styles = {
     color: '#fff',
     textAlign: 'center',
   },
-  message: (pct) => ({
+  message: pct => ({
     position: 'absolute',
     top: '50%',
     transform: 'translateY(-50%)',
@@ -87,8 +91,13 @@ const styles = {
     background: 'rgba(0,0,0,0.6)',
     padding: `${pct * 20}px ${pct * 20}px`,
     left: `${pct * 100}px`,
-    right:`${pct * 100}px`,
+    right: `${pct * 100}px`,
   }),
+};
+
+Notifications.propTypes = {
+  width: React.PropTypes.number,
+  style: React.PropTypes.any,
 };
 
 export default Notifications;
