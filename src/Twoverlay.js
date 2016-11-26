@@ -13,14 +13,20 @@ const DEFAULT_MESSAGE = [
   { username: 'Twoverlay Chat', id: 'key', emotes: {}, badges: { moderator: '1' } },
   'Welcome to the chat',
 ];
-
+const MESSAGE_CYCLE_RATE = 2e3;
+const WEBSOCKET_URL = (process.env.NODE_ENV === 'production')
+                        ? 'wss://cheerskevin.com/wss/'
+                        : 'ws://localhost:6400';
 
 let chatListener;
 
 class Twoverlay extends Component {
   constructor() {
     super();
-    this.state = { messages: [DEFAULT_MESSAGE] };
+    this.state = {
+      messages: [DEFAULT_MESSAGE],
+      notifications: [],
+    };
   }
 
   componentDidMount() {
@@ -46,6 +52,47 @@ class Twoverlay extends Component {
         messages: [args].concat(this.state.messages).slice(0, 50),
       });
     });
+    this.spawnWebsocket();
+    this.ensureMessageCycling();
+  }
+
+  componentDidUpdate() {
+    this.ensureMessageCycling();
+  }
+
+  ensureMessageCycling() {
+    if (this.state.notifications.length && !this.refresher) {
+      this.refresher = setTimeout(() => {
+        this.refresher = null;
+        this.displayNextMessage();
+      }, MESSAGE_CYCLE_RATE);
+    }
+  }
+
+  displayNextMessage() {
+    this.setState({
+      notifications: this.state.notifications.slice(1),
+    });
+  }
+
+  spawnWebsocket() {
+    setTimeout(() => {
+      this.w = new global.WebSocket(WEBSOCKET_URL);
+
+      this.w.onclose = () => {
+        this.spawnWebsocket();
+      };
+
+      this.w.onmessage = (msg) => {
+        if (msg.data === 'reload!') {
+          global.window.location.reload();
+        } else {
+          this.setState({
+            notification: this.state.notifications.concat([msg.data]),
+          });
+        }
+      };
+    }, 1000);
   }
 
   colorify(hex) {
@@ -82,8 +129,8 @@ class Twoverlay extends Component {
         <Notifications
           {...{
             style: styles.notifications(pct),
-            width: pct * 1520,
-            height: pct * 855,
+            message: this.state.notifications[0],
+            pct,
           }}
         />
       </div>
