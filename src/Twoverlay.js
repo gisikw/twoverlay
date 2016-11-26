@@ -1,141 +1,62 @@
 import React, { Component } from 'react';
-import { client as tmi } from 'tmi.js';
 import ChatWindow from './components/ChatWindow';
 import Notifications from './components/Notifications';
 import GamePanel from './components/GamePanel';
+import store from './store';
 
-const options = {
-  connection: { reconnect: true, secure: true }, channels: ['#cheerskevin'],
-};
-
-const DEFAULT_MESSAGE = [
-  '#cheerskevin',
-  { username: 'Twoverlay Chat', id: 'key', emotes: {}, badges: { moderator: '1' } },
-  'Welcome to the chat',
-];
 const MESSAGE_CYCLE_RATE = 2e3;
-const WEBSOCKET_URL = (process.env.NODE_ENV === 'production')
-                        ? 'wss://cheerskevin.com/wss/'
-                        : 'ws://localhost:6400';
-
-let chatListener;
 
 class Twoverlay extends Component {
-  constructor() {
-    super();
-    this.state = {
-      messages: [DEFAULT_MESSAGE],
-      notifications: [],
-    };
-  }
-
   componentDidMount() {
+    store.subscribe(() => this.forceUpdate());
     global.addEventListener('resize', () => this.forceUpdate());
-    global.addEventListener('keyup', (e) => {
-      if (e.keyCode === 32) {
-        this.setState({ away: !this.state.away });
-      }
-    });
-    const client = tmi(options);
-    client.connect();
-    client.on('message', (...args) => {
-      if (args[2].match(/^#[a-f0-9]{3}(?:[a-f0-9]{3})?$/i)) {
-        this.colorify(args[2]);
-      }
-      if (chatListener) {
-        chatListener({
-          sender: args[1].username || args[1]['display-name'],
-          message: args[2],
-        });
-      }
-      this.setState({
-        messages: [args].concat(this.state.messages).slice(0, 50),
-      });
-    });
-    this.spawnWebsocket();
-    this.ensureMessageCycling();
   }
 
-  componentDidUpdate() {
-    this.ensureMessageCycling();
-  }
-
-  ensureMessageCycling() {
-    if (this.state.notifications.length && !this.refresher) {
-      this.refresher = setTimeout(() => {
-        this.refresher = null;
-        this.displayNextMessage();
+  componentDidUpdate() { this.handleCycle(); }
+  handleCycle() {
+    if (store.getState().notifications.length && !this.cycler) {
+      this.cycler = setTimeout(() => {
+        store.dispatch({ type: 'cycleNotifications' });
+        this.cycler = null;
+        this.handleCycle();
       }, MESSAGE_CYCLE_RATE);
     }
   }
 
-  displayNextMessage() {
-    this.setState({
-      notifications: this.state.notifications.slice(1),
-    });
-  }
-
-  spawnWebsocket() {
-    setTimeout(() => {
-      this.w = new global.WebSocket(WEBSOCKET_URL);
-
-      this.w.onclose = () => {
-        this.spawnWebsocket();
-      };
-
-      this.w.onmessage = (msg) => {
-        if (msg.data === 'reload!') {
-          global.window.location.reload();
-        } else {
-          this.setState({
-            notification: this.state.notifications.concat([msg.data]),
-          });
-        }
-      };
-    }, 1000);
-  }
-
-  colorify(hex) {
-    this.setState({ bottomColor: hex });
-  }
-
   render() {
-    const pct = Math.min(
-      global.document.documentElement.clientWidth / 1920,
-      global.document.documentElement.clientHeight / 1080,
-    );
+    const pct = browserPct();
+    const { away, messages, bottomColor, notifications } = store.getState();
     return (
       <div style={styles.twoverlay(pct)}>
-        { /* Needs background, but overlapped by content */ }
-        { <div style={styles.smallWindow(pct, this.state.away)} /> }
-        { <div style={styles.bigWindow(pct, this.state.away)} /> }
-
-        { /* Dynamic content */ }
-        <ChatWindow
-          {...{
-            style: styles.chat(pct),
-            messages: this.state.messages,
-            pct,
-          }}
-        />
+        <div style={styles.smallWindow(pct, away)} />
+        <div style={styles.bigWindow(pct, away)} />
+        <ChatWindow {...{ style: styles.chat(pct), messages, pct }} />
         <GamePanel
           {...{
             style: styles.gamePanel(pct),
-            bg: this.state.bottomColor || '#9a9',
-            registerListener: fn => (chatListener = fn),
+            bg: bottomColor || '#9a9',
+            store,
             pct,
           }}
         />
         <Notifications
           {...{
             style: styles.notifications(pct),
-            message: this.state.notifications[0],
+            message: notifications[0],
             pct,
           }}
         />
       </div>
     );
   }
+}
+
+
+function browserPct() {
+  return Math.min(
+    global.document.documentElement.clientWidth / 1920,
+    global.document.documentElement.clientHeight / 1080,
+  );
 }
 
 const styles = {

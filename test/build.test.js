@@ -13,6 +13,8 @@ test('Twoverlay can be loaded', (assert) => {
   };
   global.Image = () => ({});
   global.window = {};
+  global.addEventListener = () => {};
+  global.WebSocket = () => {};
   require('../src/Twoverlay');
   delete global.document;
   delete global.Image;

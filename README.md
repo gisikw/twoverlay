@@ -27,4 +27,6 @@
 
 ## Cleaning Up the Code!
 - External dependencies
-- General awfulness
+
+# Notification Cycling
+- Pull out of the React component

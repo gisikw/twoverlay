@@ -43,6 +43,7 @@
     "phaser": "^2.6.2",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+    "redux": "^3.6.0",
     "tmi.js": "^1.1.1"
   },
   "scripts": {
@@ -54,7 +55,9 @@
     "lint": "eslint src test"
   },
   "nyc": {
-    "include": ["src/**/*.js"]
+    "include": [
+      "src/**/*.js"
+    ]
   },
   "homepage": "https://cheerskevin.com/twoverlay/",
   "description": "A Twitch overlay powered by React",

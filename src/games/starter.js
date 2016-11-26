@@ -12,7 +12,7 @@ const PLAYER_CHARACTER = 'man';
 const CHARACTER_OFFSETS = { baby: 0, man: 3, woman: 6, alien: 9 };
 
 export default {
-  init(id, pct, register) {
+  init(id, pct, store) {
     const Phaser = global.Phaser;
     const SCALE_X = 1520 * pct;
     const SCALE_Y = 225 * pct;
@@ -24,7 +24,8 @@ export default {
 
     pickRandomTarget();
 
-    register(({ message }) => {
+    store.subscribe(() => {
+      const message = store.getState().messages[0][2];
       if (message.match(/^\d+,\s*\d+$/)) {
         pickXYTarget(
           parseInt(message.split(',')[0], 10),
