@@ -86,5 +86,13 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "homepage": "https://cheerskevin.com/twoverlay/"
+  "homepage": "https://cheerskevin.com/twoverlay/",
+  "description": "A Twitch overlay powered by React",
+  "main": "index.js",
+  "repository": {
+    "url": "git@github.com:gisikw/twoverlay.git",
+    "type": "git"
+  },
+  "author": "Kevin Gisi <kevin@kevingisi.com>",
+  "license": "MIT"
 }
