@@ -1,33 +1,20 @@
 import React, { Component }  from 'react';
 import { client as tmi } from 'tmi.js';
+import ChatMessage from './ChatMessage';
+
+const DEFAULT_MESSAGE = [
+  '#cheerskevin', { username: 'Twoverlay Chat', id: 'key', emotes: {},
+                    badges: { moderator: '1' } }, 'Welcome to the chat',
+];
 
 const options = {
-  connection: { reconnect: true, secure: true },
-  channels: [ '#cheerskevin' ],
+  connection: { reconnect: true, secure: true }, channels: [ '#cheerskevin' ],
 };
-const colorCache = {
-  cheerskevin: '#d83ec4',
-  'Twoverlay Chat': '#ff60f3',
-};
-
-const randomColor = () => '#' + `00000${Math.floor(Math.random()*0xFFFFFF).toString(16)}`.slice(-6);
 
 class ChatWindow extends Component {
-
   constructor() {
     super();
-    this.state = { messages: [
-      [
-        '#cheerskevin',
-        {
-          username: 'Twoverlay Chat',
-          id: 'key',
-          emotes: {},
-          badges: { moderator: '1' },
-        },
-        'Welcome to the chat',
-      ]
-    ] };
+    this.state = { messages: [ DEFAULT_MESSAGE ] };
   }
 
   componentDidMount() {
@@ -47,71 +34,19 @@ class ChatWindow extends Component {
     });
   }
 
-  badges(userState) {
-    if (!userState.badges) return '';
-    if (userState.badges.broadcaster) {
-      return (
-        <span>
-          <img style={styles.emoji(this.props.pct)} src='https://static-cdn.jtvnw.net/badges/v1/5527c58c-fb7d-422d-b71b-f309dcb85cc1/1' />
-          {' '}
-        </span>
-      );
-    }
-    if (userState.badges.moderator) {
-      return (
-        <span>
-          <img style={styles.emoji(this.props.pct)} src='https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/1' />
-          {' '}
-        </span>
-      );
-    }
-    return '';
-  }
-
-  formattedMessage([channel, userState, message], isFirst) {
-    let name = userState.username || userState['display-name'];
-    let color = userState.color || colorCache[name] || (colorCache[name] = randomColor());
-    return (
-      <div key={userState.id} style={styles.message(this.props.pct, isFirst) }>
-        { this.badges(userState) }
-        <span style={styles.username(color)}>{ name }:</span>
-        {' '}
-        <span>
-          { this.emojify(message, userState.emotes) }
-        </span>
-      </div>
-    );
-  }
-
-  emojify(message, emotes) {
-    if (!emotes || !Object.keys(emotes).length) return message;
-    let replacements = Object.keys(emotes).reduce((h, icon) => {
-      emotes[icon].forEach((markers) => h[markers] = icon); return h;
-    }, {});
-
-    let msgArray = [message];
-    let offset = 0;
-    Object
-      .keys(replacements)
-      .sort((a,b) => parseInt(a.split('-')[0]) - parseInt(b.split('-')[0]))
-      .forEach((marker, i) => {
-        let start = parseInt(marker.split('-')[0]) - offset;
-        let end = parseInt(marker.split('-')[1]) - offset;
-        offset = offset + end + 1;
-        let replacementString = msgArray.pop();
-        msgArray.push(replacementString.slice(0, start));
-        msgArray.push(<img key={i} style={styles.emoji(this.props.pct) }src={`http://static-cdn.jtvnw.net/emoticons/v1/${replacements[marker]}/1.0`} />);
-        msgArray.push(replacementString.slice(end+1, replacementString.length));
-      });
-    return msgArray;
-  }
-
   render() {
     return (
       <div id='chat' style={ Object.assign({}, styles.container, this.props.style) }>
         <div style={ styles.overlay } />
-        { this.formattedMessage(this.state.messages[0], true) }
-        { this.state.messages.slice(1).map((args) => this.formattedMessage(args)) }
+        <ChatMessage
+          message={this.state.messages[0]}
+          first={true}
+          pct={this.props.pct}
+        />
+        { this.state.messages.slice(1).map((msg) =>
+            <ChatMessage message={msg} pct={this.props.pct} />
+          )
+        }
       </div>
     );
   }
@@ -133,28 +68,6 @@ const styles = {
     top: '20%',
     background: 'linear-gradient(to top, #000, transparent)',
   },
-  message: (pct, isFirst) => {
-    return Object.assign({},
-      {
-        lineHeight: `${24 * pct}px`,
-        fontSize: `${22 * pct}px`,
-        marginBottom: `${6 * pct}px`,
-        wordWrap: 'break-word',
-        breakWord: 'all',
-      },
-      isFirst ? {
-        animation: 'scaleUp 0.4s ease-in-out 1'
-      } : {}
-    )
-  },
-  emoji: (pct) => ({
-    height: `${22 * pct}px`,
-    verticalAlign: 'bottom',
-  }),
-  username: (color) => ({
-    fontWeight: 'bold',
-    color,
-  })
 };
 
 export default ChatWindow;

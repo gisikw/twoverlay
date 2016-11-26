@@ -9,7 +9,7 @@ const WEBSOCKET_URL = (process.env.NODE_ENV === 'production')
 class Notifications extends Component {
   constructor() {
     super();
-    this.state = { messages: [] };
+    this.state = { messages: [ 'Hello' ] };
   }
 
   componentDidMount() {

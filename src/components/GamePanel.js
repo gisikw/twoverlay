@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import game from '../games/starter';
 
 const GAME_DIV_ID = 'gamePanel';
 
-class GamePanel extends Component {
+class GamePanel extends React.Component {
   componentDidMount() {
     game.init(GAME_DIV_ID, this.props.pct, this.props.registerListener)
   }
