@@ -1,41 +1,38 @@
 import React, { Component } from 'react';
-import ChatWindow from './components/ChatWindow';
-import Notifications from './components/Notifications';
-import GamePanel from './components/GamePanel';
-import store from './store';
-
-const MESSAGE_CYCLE_RATE = 2e3;
+import ChatWindow from './ChatWindow';
+import Notifications from './Notifications';
+import GamePanel from './GamePanel';
+import CoverScreen from './CoverScreen';
 
 class Twoverlay extends Component {
   componentDidMount() {
-    store.subscribe(() => this.forceUpdate());
+    this.props.store.subscribe(() => this.forceUpdate());
     global.addEventListener('resize', () => this.forceUpdate());
-  }
-
-  componentDidUpdate() { this.handleCycle(); }
-  handleCycle() {
-    if (store.getState().notifications.length && !this.cycler) {
-      this.cycler = setTimeout(() => {
-        store.dispatch({ type: 'cycleNotifications' });
-        this.cycler = null;
-        this.handleCycle();
-      }, MESSAGE_CYCLE_RATE);
-    }
   }
 
   render() {
     const pct = browserPct();
-    const { away, messages, bottomColor, notifications } = store.getState();
+    const { chat, gamePanelColor, notifications, cover } =
+      this.props.store.getState();
     return (
       <div style={styles.twoverlay(pct)}>
-        <div style={styles.smallWindow(pct, away)} />
-        <div style={styles.bigWindow(pct, away)} />
-        <ChatWindow {...{ style: styles.chat(pct), messages, pct }} />
+        <CoverScreen
+          {...{
+            style: styles.cover(pct, cover.showCam),
+            primary: cover.primary,
+            secondary: cover.secondary,
+            seconds: cover.seconds,
+            active: cover.active,
+            showCam: cover.showCam,
+            pct,
+          }}
+        />
+        <ChatWindow {...{ style: styles.chat(pct), chat, pct }} />
         <GamePanel
           {...{
             style: styles.gamePanel(pct),
-            bg: bottomColor || '#9a9',
-            store,
+            bg: gamePanelColor,
+            store: this.props.store,
             pct,
           }}
         />
@@ -51,6 +48,12 @@ class Twoverlay extends Component {
   }
 }
 
+Twoverlay.propTypes = {
+  store: React.PropTypes.shape({
+    subscribe: React.PropTypes.func,
+    getState: React.PropTypes.func,
+  }).isRequired,
+};
 
 function browserPct() {
   return Math.min(
@@ -67,21 +70,12 @@ const styles = {
     margin: '0 auto',
     overflow: 'hidden',
   }),
-  smallWindow: (pct, away) => ({
-    background: away ? '#000' : 'transparent',
-    height: `${pct * 300}px`,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    width: `${pct * 400}px`,
-  }),
-  bigWindow: (pct, away) => ({
+  cover: (pct, showCam) => ({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: `${pct * (1920 - 400)}px`,
+    right: showCam ? `${400 * pct}px` : 0,
     height: `${((pct * (1920 - 400)) / 16) * 9}px`,
-    background: away ? '#000' : 'transparent',
   }),
   chat: pct => ({
     bottom: 0,

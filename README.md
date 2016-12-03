@@ -20,13 +20,3 @@
 ## Later
 - Notification system
   - Interact with Twitch API
-
-## Robust Auto-Away
-- Timers
-- Screen overlays
-
-## Cleaning Up the Code!
-- External dependencies
-
-# Notification Cycling
-- Pull out of the React component

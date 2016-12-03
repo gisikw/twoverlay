@@ -1,11 +1,11 @@
 import React from 'react';
 import ChatMessage from './ChatMessage';
 
-const ChatWindow = ({ style, messages, pct }) => (
+const ChatWindow = ({ style, chat, pct }) => (
   <div id="chat" style={Object.assign({}, styles.container, style)}>
     <div style={styles.overlay} />
     {
-      messages.map((msg, i) =>
+      chat.map((msg, i) =>
         <ChatMessage
           {...{ message: msg, key: msg[1].id, first: i === 0, pct }}
         />,
@@ -43,7 +43,7 @@ const styles = {
 ChatWindow.propTypes = {
   pct: React.PropTypes.number,
   style: React.PropTypes.any,
-  messages: React.PropTypes.array,
+  chat: React.PropTypes.array,
 };
 
 export default ChatWindow;

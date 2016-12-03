@@ -7,7 +7,7 @@ const AVATAR_SCALE = 3;
 const SPRITE_SIZE = 16;
 const NEAR_DISTANCE = 10;
 const WALKING_SPEED = 150;
-const NEW_TARGET_PROBABILITY = 0.0001;
+const NEW_TARGET_PROBABILITY = 0.0005;
 const PLAYER_CHARACTER = 'man';
 const CHARACTER_OFFSETS = { baby: 0, man: 3, woman: 6, alien: 9 };
 
@@ -25,7 +25,7 @@ export default {
     pickRandomTarget();
 
     store.subscribe(() => {
-      const message = store.getState().messages[0][2];
+      const message = store.getState().chat[0][2];
       if (message.match(/^\d+,\s*\d+$/)) {
         pickXYTarget(
           parseInt(message.split(',')[0], 10),
@@ -103,8 +103,10 @@ export default {
     }
 
     function pickXYTarget(x, y) {
-      targetX = Math.max(Math.min(x, SCALE_X - (AVATAR_SCALE * SPRITE_SIZE)), 0);
-      targetY = Math.max(Math.min(y, SCALE_Y - (AVATAR_SCALE * SPRITE_SIZE)), 0);
+      targetX =
+        Math.max(Math.min(x, SCALE_X - (AVATAR_SCALE * SPRITE_SIZE)), 0);
+      targetY =
+        Math.max(Math.min(y, SCALE_Y - (AVATAR_SCALE * SPRITE_SIZE)), 0);
     }
   },
 };

@@ -15,11 +15,13 @@ test('Twoverlay can be loaded', (assert) => {
   global.window = {};
   global.addEventListener = () => {};
   global.WebSocket = () => {};
-  require('../src/Twoverlay');
+
+  require('../src/components/Twoverlay');
+  assert.pass('Twoverlay loads');
+
   delete global.document;
   delete global.Image;
   delete global.window;
-
-  assert.pass('Twoverlay loads');
+  delete global.addEventListener;
   assert.end();
 });
