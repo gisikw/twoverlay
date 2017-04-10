@@ -14,7 +14,7 @@ const store =
 
 notificationListener(store);
 chatListener(store);
-store.dispatch({ type: 'noop' });
+store.dispatch({ type: 'load' });
 
 ReactDOM.render(
   <Twoverlay store={store} />,

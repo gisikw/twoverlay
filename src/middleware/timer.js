@@ -1,6 +1,6 @@
 let activeTimer;
 
-const TIMER_ACTIONS = ['setAway', 'countdown', 'unsetAway'];
+const TIMER_ACTIONS = ['setAway', 'countdown', 'unsetAway', 'load'];
 
 function handleTimer(store) {
   clearInterval(activeTimer);

@@ -44,12 +44,13 @@ function displayName(userState) {
 
 function displayColor(userState, name) {
   if (userState.color) return userState.color;
-  if (!colorCache[name]) colorCache[name] = randomColor();
+  if (!colorCache[name]) colorCache[name] = nextColor();
   return colorCache[name];
 }
 
-const randomColor = () =>
-  `#${`00000${Math.floor(Math.random() * 0xFFFFFF).toString(16)}`.slice(-6)}`;
+function nextColor() {
+  return `hsl(${(Object.keys(colorCache).length * 70) % 360}, 100%, 60%)`;
+}
 
 function messageWithEmoji(message, emotes, pct) {
   if (!emotes || !Object.keys(emotes).length) return message;

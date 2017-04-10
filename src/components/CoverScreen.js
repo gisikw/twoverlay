@@ -1,16 +1,18 @@
 import React from 'react';
 
+function countdownTime(seconds) {
+  if (seconds <= 0) return '';
+  const min = Math.floor(seconds / 60);
+  const sec = seconds % 60;
+  return `${min}:${sec > 9 ? sec : `0${sec}`}`;
+}
+
 const Cover = (props) => {
   const { style, pct, primary, secondary, seconds, active, showCam } = props;
   if (!active) return null;
   return (
     <div style={Object.assign({}, style, styles.container(showCam))}>
-      <div style={styles.timer(pct)}>
-        { seconds <= 0
-            ? ''
-            : `${Math.floor(seconds / 60)}:${`${seconds % 60}0`.slice(0, 2)}`
-        }
-      </div>
+      <div style={styles.timer(pct)}>{ countdownTime(seconds) }</div>
       <div style={styles.message(pct)}>
         { primary }
         <div style={styles.indented(pct)}>

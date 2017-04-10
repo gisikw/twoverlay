@@ -4,6 +4,9 @@
 
 # Twoverlay Feature List
 
+## Bugs!
+- Timer doesn't restart on page refresh
+
 ## Phaser!
 - Stress-test with many users
 - Add characters based on people in the chat!
