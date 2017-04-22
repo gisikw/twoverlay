@@ -13,6 +13,7 @@ const OVERLAY_COMMANDS = {
   'back!': store => store.dispatch({ type: 'unsetAway' }),
   'secrets!': store => store.dispatch({ type: 'secrets' }),
   'countdown!': store => store.dispatch({ type: 'countdown' }),
+  'finish!': () => {},
 };
 
 function addNotificationListener(store) {

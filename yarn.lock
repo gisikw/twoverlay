@@ -4400,6 +4400,10 @@ ws@1.0.1:
     options ">=0.0.5"
     ultron "1.0.x"
 
+xjs-framework:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/xjs-framework/-/xjs-framework-2.2.0.tgz#2147c5682b2c054ce82aa35a0f2cb96efa1768ff"
+
 xml-char-classes@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/xml-char-classes/-/xml-char-classes-1.0.0.tgz#64657848a20ffc5df583a42ad8a277b4512bbc4d"
