@@ -15,6 +15,7 @@ const FORWARDABLE_ACTIONS = [
 
 function register(store) {
   process.on('message', ({ data }) => {
+    if (!store.getState().xsplit.connected) return;
     const command = data.split(/\s/)[0];
     if (command === MODE_SET_AWAY) {
       store.dispatch({

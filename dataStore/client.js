@@ -6,7 +6,8 @@ let ws;
 function subscribe() {
   ws = new WebSocket('ws://127.0.0.1:9094');
   ws.on('message', (data) => {
-    console.log(prettyPrint(JSON.parse(data).mode))
+    const { mode, xsplit } = JSON.parse(data);
+    console.log(prettyPrint({ mode, xsplit }))
   });
   ws.on('error', () => {
     ws.close();

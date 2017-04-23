@@ -9,7 +9,9 @@ const {
 } = require('./reducers/actions');
 
 const XSPLIT_ID = 'xsplit';
-const WEBSOCKET_PORT = 9094;
+const WEBSOCKET_PORT = process.env.NODE_ENV === 'production'
+  ? 8020
+  : 9094;
 const connections = [];
 const wss = new WebSocketServer({ port: WEBSOCKET_PORT });
 const store = createStore(reducers);

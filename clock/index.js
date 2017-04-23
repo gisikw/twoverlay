@@ -1,5 +1,5 @@
 const WebSocket = require('ws');
-const WEBSOCKET_URL = 'ws://127.0.0.1:9094'
+const WEBSOCKET_URL = 'wss://cheerskevin.com/wss/'
 const RECONNECT_DELAY = 1000;
 const CLOCK_REFRESH_RATE = 1000;
 const CRITICAL = 3.6e6;

@@ -8,7 +8,7 @@ if [ "$PAD" = "400" ]; then
   kill $(ps -ef | grep twitch | awk '{print $2}') 2>/dev/null
   kill $(ps -ef | grep clock.js | awk '{print $2}') 2>/dev/null
   kill $(ps -ef | grep xdotool | awk '{print $2}') 2>/dev/null
-  ssh cheerskevin.com ./message finish!
+  # ssh cheerskevin.com ./message finish!
 else
   echo "Entering stream configuration"
   refocus=$(xdotool getwindowfocus)
@@ -21,7 +21,7 @@ else
   xdotool windowmove $wid 1520 0
   xdotool windowsize $wid 400 1080
   ratpoison -c "unmanage node"
-  nohup rxvt -fn xft:Cousine:pixelsize=120 -e node /home/gisikw/Projects/clock/index.js >/dev/null 2>&1 &
+  nohup rxvt -fn xft:Cousine:pixelsize=120 -e node /home/gisikw/Projects/twoverlay/clock/index.js >/dev/null 2>&1 &
   rpid=$!
   while [ -z "$rwid" ]; do
     rwid=$(xdotool search --pid $rpid)
@@ -31,5 +31,5 @@ else
   xdotool windowfocus $refocus
   ratpoison -c "clrunmanaged"
   nohup xdotool search --name "Twitch" behave %@ mouse-leave windowfocus $refocus >/dev/null 2>&1 &
-  ssh cheerskevin.com ./message countdown!
+  # ssh cheerskevin.com ./message countdown!
 fi

@@ -1,5 +1,7 @@
 import React from 'react';
-const WEBSOCKET_URL = 'ws://127.0.0.1:9094';
+const WEBSOCKET_URL = (process.env.NODE_ENV === 'production')
+                        ? 'wss://cheerskevin.com/wss/'
+                        : 'ws://127.0.0.1:9094';
 
 class WebSocketDB extends React.Component {
   constructor(...args) {

@@ -1,10 +1,11 @@
 {
-  "name": "accountant",
+  "name": "dataStore",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "find -name '*.test.js' | while read f; do node $f | faucet; done"
+    "test": "find -name '*.test.js' | while read f; do node $f | faucet; done",
+    "deploy": "ssh cheerskevin.com mkdir -p /var/www/websocket && rsync -a . cheerskevin.com:/var/www/websocket/ && ssh cheerskevin.com '. /home/gisikw/.nvm/nvm.sh && pm2 restart /var/www/websocket'"
   },
   "devDependencies": {
     "faucet": "^0.0.1",

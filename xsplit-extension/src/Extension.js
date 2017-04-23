@@ -3,7 +3,9 @@ import superficial from 'superficial';
 import xjs from 'xjs-framework/dist/xjs-es2015';
 
 const EXTENSION_SIZE = { width: 200, height: 100 };
-const WEBSOCKET_URL = 'ws://127.0.0.1:9094';
+const WEBSOCKET_URL = (process.env.NODE_ENV === 'production')
+                        ? 'wss://cheerskevin.com/wss/'
+                        : 'ws://127.0.0.1:9094';
 
 class Extension extends React.Component {
   constructor(...args) {
