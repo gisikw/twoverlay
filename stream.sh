@@ -8,7 +8,7 @@ if [ "$PAD" = "400" ]; then
   kill $(ps -ef | grep twitch | awk '{print $2}') 2>/dev/null
   kill $(ps -ef | grep clock.js | awk '{print $2}') 2>/dev/null
   kill $(ps -ef | grep xdotool | awk '{print $2}') 2>/dev/null
-  # ssh cheerskevin.com ./message finish!
+  ssh cheerskevin.com ./message mode-offline
 else
   echo "Entering stream configuration"
   refocus=$(xdotool getwindowfocus)
@@ -31,5 +31,5 @@ else
   xdotool windowfocus $refocus
   ratpoison -c "clrunmanaged"
   nohup xdotool search --name "Twitch" behave %@ mouse-leave windowfocus $refocus >/dev/null 2>&1 &
-  # ssh cheerskevin.com ./message countdown!
+  ssh cheerskevin.com ./message mode-preshow
 fi

@@ -1,5 +1,5 @@
-Twoverly Stream Management System
-=================================
+Twoverlay Stream Management System
+==================================
 
 Five interconnected projects:
 - React-based overlay
