@@ -1,6 +1,9 @@
 module.exports = {
   INIT: 'init',
 
+  XSPLIT_CONNECT: 'xsplit-connect',
+  XSPLIT_DISCONNECT: 'xsplit-disconnect',
+
   CHAT_MESSAGE: 'chat-message',
 
   MODE_SET_AWAY: 'mode-away',
